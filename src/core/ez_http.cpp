@@ -429,7 +429,6 @@ void SERVER::sendContent(const String& content)
 {
     const char* footer = "\r\n";
     size_t len = content.length();
-    size_t put;
 
     if (_chunked)
     {
@@ -442,9 +441,7 @@ void SERVER::sendContent(const String& content)
         }
     }
 
-    put = _currentClient.write(content.c_str(), len);
-    
-    ESP_LOGV(iotTag, "Sent %d bytes of %d", put, len);
+    _currentClient.write(content.c_str(), len);
     
     if (_chunked)
     {

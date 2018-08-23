@@ -11,9 +11,14 @@
 ** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ** THE SOFTWARE.
 */
-#include "iot.h"
-#include <MD5Builder.h>
+#include <Arduino.h>
+#ifdef TRAVIS_BUILDING
+#include <Updater.h>
+#else
 #include <Update.h>
+#endif
+#include <MD5Builder.h>
+#include "iot.h"
 
 #define INT_BUFFER_SIZE 16
 
