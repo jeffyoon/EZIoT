@@ -43,7 +43,7 @@ void setup()
 {
     // Add device - this MUST be done before call iot.start()!
     //
-    EZ::iot.addDevice(wSocket);
+    EZ::iot.addDevice('WS01', wSocket);
 
     // Local Configuration
     //

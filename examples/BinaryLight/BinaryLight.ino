@@ -41,7 +41,7 @@ void setup()
 {
     // Add device - this MUST be done before call iot.start()!
     //
-    EZ::iot.addDevice(bLight);
+    EZ::iot.addDevice('BL01', bLight);
 
     // Local Configuration
     //
