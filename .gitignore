@@ -37,3 +37,4 @@
 .vscode/launch.json
 save
 src/test.cpp
+/platformio.ini

@@ -12,11 +12,8 @@
 ** THE SOFTWARE.
 */
 #include <Arduino.h>
-#ifdef TRAVIS_BUILDING
-#include <Updater.h>
-#else
+#include <ArduinoOTA.h>
 #include <Update.h>
-#endif
 #include <MD5Builder.h>
 #include "iot.h"
 

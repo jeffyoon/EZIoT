@@ -32,4 +32,4 @@ install:
     - pip install -U platformio
 
 script:
-    - platformio ci --lib="." --board=esp32travis
+    - platformio ci --lib="." --board=esp32dev
