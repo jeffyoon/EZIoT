@@ -34,7 +34,7 @@ bool wSocketActivity(EZ::ACTIVITY* activity, EZ::SERVICE::CALLBACK type, void* v
 /*
 ** Define the UPNP device
 */
-EZ::WEMO::SOCKET wSocket(&wSocketActivity);
+EZ::WEMO::SOCKET wSocket(wSocketActivity);
 
 /*
 ** Program Setup

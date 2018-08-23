@@ -25,7 +25,7 @@ cache:
 
 env:
     - PLATFORMIO_CI_SRC=examples/BinaryLight
-    - PLATFORMIO_CI_SRC=examples/DimmableLight
+#   - PLATFORMIO_CI_SRC=examples/DimmableLight
     - PLATFORMIO_CI_SRC=examples/WemoSocket
 
 install:

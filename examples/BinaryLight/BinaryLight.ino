@@ -32,7 +32,7 @@ bool bLightActivity(EZ::ACTIVITY* activity, EZ::SERVICE::CALLBACK type, void* vp
 /*
 ** Define our UPNP device
 */
-EZ::UPNP::DEVICE_BINARYLIGHT bLight(&bLightActivity);
+EZ::UPNP::BINARYLIGHT bLight(bLightActivity);
 
 /*
 ** Program Setup
