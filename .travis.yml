@@ -32,5 +32,4 @@ install:
     - pip install -U platformio
 
 script:
-    - platformio lib search "header:Update.h"
     - platformio ci --lib="." --board=esp32dev
