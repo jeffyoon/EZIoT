@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+.pioenvs
+.piolibdeps
+.vscode/c_cpp_properties.json
+.vscode/.browse.c_cpp.db*
+.vscode/launch.json
+save
+src/test.cpp
