@@ -42,8 +42,7 @@ IOT::IOT()
 {
     _mutexLock = xSemaphoreCreateMutex();
     _eventGroup = xEventGroupCreate();
-    // 'rO0T' = 1917792340
-    addDevice(1917792340, root);
+    _headDevice = _tailDevice = &root;
 }
 
 IOT::~IOT() {}
@@ -59,7 +58,7 @@ DEVICE& IOT::addDevice(const uint32_t code, DEVICE& newDevice)
 
 DEVICE* IOT::addDevice(const uint32_t code, DEVICE* newDevice)
 {
-    if ((newDevice) && !newDevice->_rootDevice)
+    if ((newDevice) && !newDevice->_homeDevice && !newDevice->_iotCode)
     {
         if (_headDevice == nullptr)
         {
@@ -76,7 +75,7 @@ DEVICE* IOT::addDevice(const uint32_t code, DEVICE* newDevice)
             _tailDevice = newDevice;
         }
 
-        newDevice->_rootDevice = &root;
+        // newDevice->_homeDevice = &root;
         newDevice->_iotCode = code;
     }
 
@@ -134,7 +133,7 @@ void IOT::start(uint16_t webPort)
         {
             console.printf(LOG::TITLE, "** System Services Ready! **");
             xEventGroupSetBits(_eventGroup, EZIOT_BIT);
-            timerPeriod(1000);
+            timerPeriod(60000);
             console.printf(LOG::TITLE, "** Starting Device(s) **");
             _control(_headDevice, CONTROL::START);
             console.printf(LOG::INFO1, "Free Heap %d", ESP.getFreeHeap());
@@ -163,7 +162,7 @@ void IOT::loop(void)
         //
         if (timerExpired())
         {
-            console.printf(LOG::TITLE, "** Hearbeat **");
+            console.printf(LOG::TITLE, "** Heartbeat **");
             timerReset();
 
             // Pulse watchdog pin!
@@ -277,7 +276,7 @@ void IOT::_control(DEVICE* device, iot_control_t mode)
 
                 if (!device->_httpServer)
                 {
-                    if ((device->_rootDevice == &root) && device->_httpPort != 0 && device->_httpPort != root._httpPort)
+                    if ((device->_homeDevice == &root) && device->_httpPort != 0 && device->_httpPort != root._httpPort)
                     {
                         ESP_LOGV(iotTag, "HTTP: Create (%u) Server: %s", device->_httpPort,
                                  device->upnpDeviceType().c_str());
@@ -338,7 +337,7 @@ void IOT::_control(DEVICE* device, iot_control_t mode)
                         }
 
                         // Create NVS Key
-                        uint32_t t0 = device->_rootDevice ? device->_rootDevice->_iotCode : 0xE3107000;
+                        uint32_t t0 = device->_homeDevice ? device->_homeDevice->_iotCode : 0xE3107000;
                         uint32_t t1 = foldString(device->upnpDeviceType(), t0);
                         uint32_t t2 = foldString(service->_name, t1);
                         char tag[16] = {0};

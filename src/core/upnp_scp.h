@@ -132,7 +132,7 @@ namespace EZ
 
                 if (_ut.startsWith(_st))
                 {
-                    ESP_LOGV(iotTag, "%s == %s", st.c_str(), upnpServiceType().c_str());
+                    // ESP_LOGV(iotTag, "%s == %s", st.c_str(), upnpServiceType().c_str());
                     return true;
                 }
 
@@ -299,13 +299,11 @@ namespace EZ
             */
             bool _genaSubscribe(HTTP::SERVER& server)
             {
-                /**
                 int h, mh = server.headers();
                 for (h = 0; h < mh; h++)
                 {
                     ESP_LOGV(iotTag, "Header: %s = %s", server.headerName(h).c_str(), server.header(h).c_str());
                 }
-                **/
                
                 String tmp;
                 int i, to;
@@ -411,11 +409,13 @@ namespace EZ
 
             bool _genaUnSubscribe(HTTP::SERVER& server)
             {
+                /**
                 int h, mh = server.headers();
                 for (h = 0; h < mh; h++)
                 {
                     ESP_LOGV(iotTag, "Header: %s = %s", server.headerName(h).c_str(), server.header(h).c_str());
                 }
+                **/
 
                 // If SID header field and one of NT or CALLBACK header fields are present, error 400
                 //
@@ -586,6 +586,8 @@ namespace EZ
             {
                 String sa, urn, action;
 
+                ESP_LOGV(iotTag, "SOAP : %s", server.arg("plain").c_str());
+
                 if (!server.header("Content-Type").startsWith(MIME_TYPE_XML))
                     return server.send(415); // Unsupported Media Type
 
@@ -610,8 +612,13 @@ namespace EZ
                                 return _soapAction(server, static_cast<ACTION*>(activity));
                         } while ((activity = activity->nextActivity()));
                     }
+
+                    ESP_LOGE(iotTag, "Cannot find matching activity");
+
                     return _soapFault(server, EZ_SOAP_ERROR_INVALID_ACTION, action);
                 }
+
+                ESP_LOGE(iotTag, "Cannot find matching service URN");
 
                 return _soapFault(server, EZ_SOAP_ERROR_INVALID_ACTION, urn);
             }
@@ -634,8 +641,6 @@ namespace EZ
 
                 ti = server.arg("plain").indexOf(action->name());
                 si = server.arg("plain").indexOf('>', ti);
-
-                ESP_LOGV(iotTag, "TAG : %s", server.arg("plain").substring(ti, si).c_str());
 
                 // Make sure the incoming envelope contains a service type match
                 if (((index = server.arg("plain").indexOf(upnpServiceType().c_str())) < 0) || ti < 0 || si < 0)
@@ -661,11 +666,11 @@ namespace EZ
                         if ((si = tmp.indexOf(' ')) > 0)
                             tmp = tmp.substring(0, si);
 
-                        ESP_LOGV(iotTag, "Probe (%d): %s", si, tmp.c_str());
-
                         // Have we found the end of the argument list?
                         if (tmp.startsWith("/"))
                         {
+                            ESP_LOGE(iotTag, "End Tag? %s", tmp.c_str());
+
                             index = server.arg("plain").indexOf(':', index) + 1;
                             if (!server.arg("plain").substring(index).startsWith(action->name()))
                                 return _soapFault(server, EZ_SOAP_ERROR_INVALID_ARGS, tmp);
@@ -678,7 +683,6 @@ namespace EZ
 
                         if ((ti < 0) || !server.arg("plain").substring(ti + 2).startsWith(tmp))
                         {
-                            ESP_LOGE(iotTag, "No closing tag?");
                             return _soapFault(server, EZ_SOAP_ERROR_INVALID_ARGS, tmp);
                         }
 
@@ -687,8 +691,6 @@ namespace EZ
 
                         // Move to end of tag, ready for next check
                         index = server.arg("plain").indexOf(">", ti) + 1;
-
-                        ESP_LOGV(iotTag, "In ARG : %s = '%s'", tmp.c_str(), val.c_str());
 
                         // See if we are expecting this argument, in this position/order
                         arg = action->upnpArgument(argc);
@@ -711,8 +713,6 @@ namespace EZ
                                 argList[argc].value = val;
                                 argList[argc].arg = arg;
                                 argc++;
-
-                                ESP_LOGV(iotTag, "In ARG : %s = '%s'", tmp.c_str(), val.c_str());
                             }
                             else
                                 break;
@@ -752,7 +752,6 @@ namespace EZ
                         if (arg->dirOut || arg->retVal)
                         {
                             // Encode Value?
-                            ESP_LOGV(iotTag, "Out ARG: %s = '%s'", arg->argName, argList[argc].value.c_str());
                             response += xmlTag(arg->argName, argList[argc].value, true);
                         }
                     }

@@ -1,5 +1,5 @@
 /*
-** EZIoT - Example UPNP BinaryLight Device
+** EZIoT - Example UPnP BinaryLight Device
 **
 ** Copyright (c) 2017,18 P.C.Monteith, GPL-3.0 License terms and conditions.
 **
@@ -30,7 +30,7 @@
 bool bLightActivity(EZ::ACTIVITY* activity, EZ::SERVICE::CALLBACK type, void* vp);
 
 /*
-** Define our UPNP device
+** Define our UPnP device
 */
 EZ::UPNP::BINARYLIGHT bLight(bLightActivity);
 
@@ -96,15 +96,18 @@ bool bLightActivity(EZ::ACTIVITY* activity, EZ::SERVICE::CALLBACK type, void* vp
 
         // Set the pin to the 'Target' state
         digitalWrite(BLIGHT_PIN, target);
-
-        // Set the 'Status' variable to the actual pin value
-        bLight.SwitchPower.Status.native(digitalRead(BLIGHT_PIN));
     }
 
     if (activity == &bLight.SwitchPower.Status && type == EZ::SERVICE::CALLBACK::POST_CHANGE)
     {
         bool target = bLight.SwitchPower.Target.native();
         Serial.printf("Binary Light: Status: %s (%d)\n", bLight.SwitchPower.Status.native() ? "ON" : "OFF", target);
+    }
+
+    if (type == EZ::SERVICE::CALLBACK::LOOP)
+    {
+        // Set the 'Status' variable to the actual pin value
+        bLight.SwitchPower.Status.native(digitalRead(BLIGHT_PIN));
     }
 
     // TRUE = Allow activity to continue as normal

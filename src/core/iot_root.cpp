@@ -54,6 +54,8 @@ const char HTTP_END[] PROGMEM = "</div></body></html>";
 
 ROOT::ROOT() : DEVICE(), HTTP::SERVER()
 {
+    // 'rO0T' = 1917792340
+    _iotCode = 1917792340;
     _upnpVersionMajor = 2;
     _upnpVersionMinor = 0;
     _upnpDeviceType = "Thing:1";

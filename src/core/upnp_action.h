@@ -106,6 +106,25 @@ namespace EZ
                 return xml;
             }
 
+            bool addArgument(VARIABLE* relState, const char* argName, bool out = false, bool ret = false)
+            {
+                for (int argc = 0; argc < EZ_UPNP_MAX_ARGS; argc++)
+                {
+                    if (!_args[argc].relState)
+                    {
+                        _args[argc].relState = relState;
+                        _args[argc].argName = argName;
+                        _args[argc].dirOut = out;
+                        _args[argc].retVal = argc == 0 ? ret : false;
+
+                        return true;
+                    }
+                    else if (_args[argc].relState == relState)
+                        break;
+                }
+                return false;
+            }
+
             action_arg_t* upnpArgument(int index)
             {
                 if (index >= 0 && index < EZ_UPNP_MAX_ARGS)
@@ -143,4 +162,3 @@ namespace EZ
     } // namespace UPNP
 } // namespace EZ
 #endif // _UPNP_ACTION_H
-

@@ -34,7 +34,7 @@ namespace EZ
         ACTIVITY(const char* name, MODE mode);
         MODE mode(void) { return _mode; }
         String name(void) { return _name; }
-        SERVICE* baseService(void) const { return _baseService; }
+        SERVICE* homeService(void) const { return _homeService; }
         ACTIVITY* nextActivity(void) const { return _nextActivity; }
         ACTIVITY* prevActivity(void) const { return _prevActivity; }
         virtual String upnpXML(bool valueTag = false, bool emptyTag = false) = 0;
@@ -47,7 +47,7 @@ namespace EZ
     private:
         MODE _mode;
         String _name;
-        SERVICE* _baseService;
+        SERVICE* _homeService;
         ACTIVITY* _prevActivity;
         ACTIVITY* _nextActivity;
 

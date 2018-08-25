@@ -77,7 +77,7 @@ namespace EZ
 
         DEVICE* addDevice(const uint32_t code, DEVICE* newDevice);
         DEVICE& addDevice(const uint32_t code, DEVICE& newDevice);
-        DEVICE* rootDevice(void) const { return _rootDevice; }
+        DEVICE* homeDevice(void) const { return _homeDevice; }
         DEVICE* headDevice(void) const { return _headDevice; }
         DEVICE* tailDevice(void) const { return _tailDevice; }
         DEVICE* prevDevice(void) const { return _prevDevice; }
@@ -104,7 +104,7 @@ namespace EZ
         const char* _upnpExtra = nullptr;
         const char* _ssdpExtra = nullptr;
 
-        DEVICE* _rootDevice;
+        DEVICE* _homeDevice;
         DEVICE* _prevDevice;
         DEVICE* _nextDevice;
         DEVICE* _headDevice;

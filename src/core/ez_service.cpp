@@ -34,7 +34,7 @@ ACTIVITY& SERVICE::addActivity(ACTIVITY& newActivity)
 
 ACTIVITY* SERVICE::addActivity(ACTIVITY* newActivity)
 {
-    if ((newActivity) && !newActivity->_baseService)
+    if ((newActivity) && !newActivity->_homeService)
     {
         if (_headActivity == nullptr)
         {
@@ -51,7 +51,7 @@ ACTIVITY* SERVICE::addActivity(ACTIVITY* newActivity)
             _tailActivity = newActivity;
         }
 
-        newActivity->_baseService = this;
+        newActivity->_homeService = this;
 
         if (_mode == MODE::CONFIG && newActivity->_mode == ACTIVITY::MODE::VARIABLE)
         {

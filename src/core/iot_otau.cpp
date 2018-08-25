@@ -12,7 +12,7 @@
 ** THE SOFTWARE.
 */
 #include <Arduino.h>
-#include <ArduinoOTA.h>
+//#include <ArduinoOTA.h>
 #include <Update.h>
 #include <MD5Builder.h>
 #include "iot.h"

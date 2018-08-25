@@ -17,27 +17,27 @@
 using namespace EZ;
 
 ACTIVITY::ACTIVITY(const char* name, MODE mode)
-    : _mode(mode), _name(name), _baseService(nullptr), _prevActivity(nullptr), _nextActivity(nullptr)
+    : _mode(mode), _name(name), _homeService(nullptr), _prevActivity(nullptr), _nextActivity(nullptr)
 {
 }
 
 int ACTIVITY::_takeServiceMutex(TickType_t xTicks)
 {
-    if (_baseService)
-        return xSemaphoreTake(_baseService->mutexLock(), xTicks);
+    if (_homeService)
+        return xSemaphoreTake(_homeService->mutexLock(), xTicks);
     return -1;
 }
 
 int ACTIVITY::_giveServiceMutex(void)
 {
-    if (_baseService)
-        return xSemaphoreGive(_baseService->mutexLock());
+    if (_homeService)
+        return xSemaphoreGive(_homeService->mutexLock());
     return -1;
 }
 
 bool ACTIVITY::_postCallback(SERVICE::CALLBACK type, void *vp)
 {
-    if ((_baseService) && _baseService->_onActivityCb && type != SERVICE::CALLBACK::LOOP)
-        return _baseService->_onActivityCb(this, type, vp);
+    if ((_homeService) && _homeService->_onActivityCb && type != SERVICE::CALLBACK::LOOP)
+        return _homeService->_onActivityCb(this, type, vp);
     return true;
 }

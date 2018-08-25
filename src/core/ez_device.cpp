@@ -38,7 +38,7 @@ DEVICE::DEVICE(uint16_t port)
     : _upnpVersionMajor(1), _upnpVersionMinor(0), _upnpXMLNS(nullptr), _upnpDeviceType(nullptr),
       _upnpManufacturer(nullptr), _upnpManufacturerURL(nullptr), _upnpModelDescription(nullptr),
       _upnpModelName(nullptr), _upnpModelNumber(nullptr), _upnpModelURL(nullptr), _upnpSerialNumber(nullptr),
-      _upnpUDN(nullptr), _upnpUPC(nullptr), _upnpExtra(nullptr), _ssdpExtra(nullptr), _rootDevice(nullptr),
+      _upnpUDN(nullptr), _upnpUPC(nullptr), _upnpExtra(nullptr), _ssdpExtra(nullptr), _homeDevice(nullptr),
       _prevDevice(nullptr), _nextDevice(nullptr), _headDevice(nullptr), _tailDevice(nullptr), _headService(nullptr),
       _tailService(nullptr), _httpServer(nullptr), _httpPort(port),
       _upnpFriendlyName("FriendlyName", false, true, "", 32), _upnpUUID("uuid:", false, true, false), _ssdpAdverts(true)
@@ -360,7 +360,9 @@ DEVICE& DEVICE::addDevice(const uint32_t code, DEVICE& newDevice)
 
 DEVICE* DEVICE::addDevice(const uint32_t code, DEVICE* newDevice)
 {
-    if ((newDevice) && !newDevice->_rootDevice && !_rootDevice)
+    ESP_LOGI(iotTag, "Add Embedded Device: %s", newDevice->upnpDeviceType().c_str());
+
+    if ((newDevice) && !newDevice->_homeDevice && !newDevice->_iotCode)
     {
         if (_headDevice == nullptr)
         {
@@ -377,7 +379,9 @@ DEVICE* DEVICE::addDevice(const uint32_t code, DEVICE* newDevice)
             _tailDevice = newDevice;
         }
 
-        newDevice->_rootDevice = this;
+        ESP_LOGI(iotTag, "Added Embedded Device: %s", newDevice->upnpDeviceType().c_str());
+
+        newDevice->_homeDevice = this;
         newDevice->_iotCode = code;
     }
 

@@ -477,7 +477,7 @@ bool SERVER::send(int code, const char* content_type, const String& content)
              _currentClient.remotePort(), code, responseCodeToString(code).c_str(),
              methodToString(_currentMethod).c_str(), _currentUri.c_str());
 
-    // ESP_LOGV(iotTag, "\n%s%s", header.c_str(), content.c_str());
+    ESP_LOGV(iotTag, "\n%s%s", header.c_str(), content.c_str());
 
     // Hmmmm! - Without these, it doesn't work!?????
     //
@@ -501,11 +501,6 @@ void SERVER::_handleRequest()
     else
     {
         handled = _currentHandler->_httpHandle(*this, _currentMethod, _currentUri);
-
-        if (!handled)
-        {
-            ESP_LOGV(iotTag, "Request handler failed to handle request");
-        }
     }
 
     if (!handled)
@@ -871,7 +866,7 @@ bool SERVER::_parseRequest(WiFiClient& client)
                     arg.value = String(plainBuf);
                 }
 
-                ESP_LOGV(iotTag, "Plain: %s", plainBuf);
+                // ESP_LOGV(iotTag, "Plain: %s", plainBuf);
 
                 free(plainBuf);
             }
@@ -914,8 +909,6 @@ bool SERVER::_parseRequest(WiFiClient& client)
             headerValue = req.substring(headerDiv + 2);
             _collectHeader(headerName.c_str(), headerValue.c_str());
 
-            // ESP_LOGV(iotTag, "Header: %s = %s", headerName.c_str(), headerValue.c_str());
-
             if (headerName.equalsIgnoreCase("Host"))
             {
                 _hostHeader = headerValue;
@@ -923,10 +916,6 @@ bool SERVER::_parseRequest(WiFiClient& client)
         }
         _parseArguments(searchStr);
     }
-
-    // client.flush();
-
-    // ESP_LOGV(iotTag, "Request: %s Args: %s", url.c_str(), searchStr.c_str());
 
     return true;
 }
@@ -946,8 +935,6 @@ bool SERVER::_collectHeader(const char* headerName, const char* headerValue)
 
 void SERVER::_parseArguments(String data)
 {
-    // ESP_LOGV(iotTag, "Args: %s", data.c_str());
-
     if (_currentArgs)
         delete[] _currentArgs;
     _currentArgs = 0;
@@ -969,8 +956,6 @@ void SERVER::_parseArguments(String data)
         ++_currentArgCount;
     }
 
-    // ESP_LOGV(iotTag, "Args Count: %d", _currentArgCount);
-
     _currentArgs = new RequestArgument[_currentArgCount + 1];
 
     int pos = 0;
@@ -981,12 +966,8 @@ void SERVER::_parseArguments(String data)
         int equal_sign_index = data.indexOf('=', pos);
         int next_arg_index = data.indexOf('&', pos);
 
-        // ESP_LOGV(iotTag, "Pos: %d =@: %d &@: %d", pos, equal_sign_index, next_arg_index);
-
         if ((equal_sign_index == -1) || ((equal_sign_index > next_arg_index) && (next_arg_index != -1)))
         {
-            // ESP_LOGV(iotTag, "Arg: %d Missing Value", iarg);
-
             if (next_arg_index == -1)
                 break;
             pos = next_arg_index + 1;
@@ -997,8 +978,6 @@ void SERVER::_parseArguments(String data)
         arg.key = data.substring(pos, equal_sign_index);
         arg.value = data.substring(equal_sign_index + 1, next_arg_index);
 
-        // ESP_LOGV(iotTag, "Arg: %d Key: %s = %s", iarg, arg.key.c_str(), arg.value.c_str());
-
         ++iarg;
         if (next_arg_index == -1)
             break;
@@ -1006,7 +985,6 @@ void SERVER::_parseArguments(String data)
     }
 
     _currentArgCount = iarg;
-    // ESP_LOGV(iotTag, "Args Count: %d", _currentArgCount);
 }
 
 void SERVER::_uploadWriteByte(uint8_t b)
@@ -1036,8 +1014,6 @@ uint8_t SERVER::_uploadReadByte(WiFiClient& client)
 bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
 {
     (void)len;
-
-    // ESP_LOGV(iotTag, "Parse Form, Boundary: %s Len: %s", boundary.c_str(), len);
 
     String line;
     int retry = 0;
@@ -1081,14 +1057,10 @@ bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
                         argName = argName.substring(0, argName.indexOf('"'));
                         argIsFile = true;
 
-                        // ESP_LOGV(iotTag, "POST Arg, File: %s", argFilename.c_str());
-
                         // Use GET to set the filename if uploading using blob
                         if (argFilename == "blob" && hasArg("filename"))
                             argFilename = arg("filename");
                     }
-
-                    // ESP_LOGV(iotTag, "POST Arg, Name: %s", argName.c_str());
 
                     argType = MIME_TYPE_TEXT;
                     line = client.readStringUntil('\r');
@@ -1103,8 +1075,6 @@ bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
                         client.readStringUntil('\n');
                     }
 
-                    // ESP_LOGV(iotTag, "POST Arg, Type: %s", argType.c_str());
-
                     if (!argIsFile)
                     {
                         while (1)
@@ -1118,15 +1088,12 @@ bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
                             argValue += line;
                         }
 
-                        // ESP_LOGV(iotTag, "POST Arg, Value: %s", argValue.c_str());
-
                         RequestArgument& arg = postArgs[postArgsLen++];
                         arg.key = argName;
                         arg.value = argValue;
 
                         if (line == ("--" + boundary + "--"))
                         {
-                            // ESP_LOGV(iotTag, "POST: Parsing Done");
                             break;
                         }
                     }
@@ -1138,9 +1105,6 @@ bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
                         _currentUpload.type = argType;
                         _currentUpload.totalSize = 0;
                         _currentUpload.currentSize = 0;
-
-                        // ESP_LOGV(iotTag, "Start File: %s Type: %s", _currentUpload.filename.c_str(),
-                        //_currentUpload.type.c_str());
 
                         if (_currentHandler && _currentHandler->_httpUploadable(_currentUri))
                             _currentHandler->_httpUpload(*this, _currentUri, _currentUpload);
@@ -1205,15 +1169,11 @@ bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
                                 if (_currentHandler && _currentHandler->_httpUploadable(_currentUri))
                                     _currentHandler->_httpUpload(*this, _currentUri, _currentUpload);
 
-                                // ESP_LOGV(iotTag, "End File: %s Type: %s Size: %d",
-                                // _currentUpload.filename.c_str(), _currentUpload.type.c_str(),
-                                //_currentUpload.totalSize);
-
                                 line = client.readStringUntil(0x0D);
                                 client.readStringUntil(0x0A);
+
                                 if (line == "--")
                                 {
-                                    // ESP_LOGV(iotTag, "POST: Parsing Done");
                                     break;
                                 }
                                 continue;
@@ -1271,8 +1231,6 @@ bool SERVER::_parseForm(WiFiClient& client, String boundary, uint32_t len)
 
         return true;
     }
-
-    // ESP_LOGV(iotTag, "ERROR-Line: %s", line.c_str());
 
     return false;
 }

@@ -201,25 +201,25 @@ void IOT::_ssdpNotify(DEVICE* device, ssdp_method_t method, AsyncUDPPacket* pack
     {
         String uu = device->upnpUDN();
 
-        if (device->_rootDevice == &root)
+        if (!device->_homeDevice && device->_iotCode)
         {
             String nt("upnp:rootdevice");
             String usn = uu + "::" + nt;
 
             _ssdpRespond(device->urlSchema(false).c_str(), usn.c_str(), nt.c_str(), device->ssdpExtra().c_str(),
                          device->upnpServer().c_str(), method, packet);
-            vTaskDelay(100 / portTICK_PERIOD_MS);
+            vTaskDelay(50 / portTICK_PERIOD_MS);
         }
 
         _ssdpRespond(device->urlSchema(false).c_str(), uu.c_str(), uu.c_str(), device->ssdpExtra().c_str(),
                      device->upnpServer().c_str(), method, packet);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(50 / portTICK_PERIOD_MS);
 
         String nt = device->upnpDeviceType();
         String usn = uu + "::" + nt;
         _ssdpRespond(device->urlSchema(false).c_str(), usn.c_str(), nt.c_str(), device->ssdpExtra().c_str(),
                      device->upnpServer().c_str(), method, packet);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(50 / portTICK_PERIOD_MS);
     }
 }
 
@@ -283,7 +283,7 @@ void IOT::_ssdpRespond(const char* loc, const char* usn, const char* stnt, const
         _ssdpUDP.writeTo((const uint8_t*)&buffer[0], strlen(buffer), packet->remoteIP(), packet->remotePort());
     }
 
-    // ESP_LOGV(iotTag, "\n%s", buffer);
+    // ESP_LOGV(iotTag, "Packet Out:\n%s", buffer);
 }
 
 /*
@@ -320,7 +320,7 @@ void IOT::_ssdpRequest(AsyncUDPPacket packet)
         return;
     }
 
-    // ESP_LOGD(iotTag, "-=*[%s]*=-", packet.data());
+    // ESP_LOGD(iotTag, "Packet In:\n%s", packet.data());
 
     // get message type
     int res = _ssdpParse(&token, true, false, packet);
@@ -398,10 +398,7 @@ void IOT::_ssdpRequest(AsyncUDPPacket packet)
 
     if (header == START)
     {
-        // Limit response delay to max 6 Seconds
-        // Amazon Alexa only waits a short time
-        //
-        uint32_t _delay = min(random(500, _mx * 1000L), 5000L);
+        uint32_t _delay = random(1, _mx) * 1000L;
 
         vTaskDelay(_delay / portTICK_PERIOD_MS);
 
@@ -450,7 +447,7 @@ void IOT::_ssdpRoot(AsyncUDPPacket& packet)
         return;
     do
     {
-        if (device->_rootDevice == &root && device->ssdpAlive())
+        if (!device->_homeDevice && device->_iotCode && device->ssdpAlive())
         {
             String usn = device->upnpUDN() + "::" + device->upnpDeviceType();
             _ssdpRespond(device->urlSchema(false).c_str(), usn.c_str(), "upnp:rootdevice", device->ssdpExtra().c_str(),

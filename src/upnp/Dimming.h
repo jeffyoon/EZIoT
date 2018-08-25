@@ -15,7 +15,6 @@
 #define _UPNP_DIMMING_H
 #include "../ez.h"
 
-
 namespace EZ
 {
     namespace UPNP
@@ -26,16 +25,24 @@ namespace EZ
         class DIMMING : public SCP
         {
         public:
-            UPNP::ACTION SetLoadLevelTarget;
-            UPNP::ACTION GetLoadLevelTarget;
-            UPNP::ACTION GetLoadLevelStatus;
-            UPNP::ACTION SetOnEffectLevel;
-            UPNP::ACTION SetOnEffect;
-            // ACTION GetOnEffectParameters;
-            UPNP::ACTION StepUp;
-            UPNP::ACTION StepDown;
-            UPNP::ACTION StartRampUp;
-            UPNP::ACTION StartRampDown;
+            ACTION SetLoadLevelTarget;
+            ACTION GetLoadLevelTarget;
+            ACTION GetLoadLevelStatus;
+            ACTION SetOnEffectLevel;
+            ACTION SetOnEffect;
+            ACTION GetOnEffectParameters;
+            ACTION StepUp;
+            ACTION StepDown;
+            ACTION StartRampUp;
+            ACTION StartRampDown;
+            ACTION StartRampToLevel;
+            ACTION SetStepDelta;
+            ACTION GetStepDelta;
+            ACTION SetRampRate;
+            ACTION GetRampRate;
+            ACTION PauseRamp;
+            ACTION ResumeRamp;
+            ACTION GetIsRamping;
 
             VAR::UI1 LoadLevelTarget;
             VAR::UI1 LoadLevelStatus;
@@ -54,14 +61,18 @@ namespace EZ
                   GetLoadLevelStatus("GetLoadLevelStatus", &LoadLevelStatus, "retLoadLevelStatus", true, true),
                   SetOnEffectLevel("SetOnEffectLevel", &OnEffectLevel, "newOnEffectLevel", false),
                   SetOnEffect("SetOnEffect", &OnEffect, "newOnEffect", false),
-                  // GetOnEffectParameters() - 2 Args!!?
-                  StepUp("StepUp"), StepDown("StepDown"), StartRampUp("StepUp"), StartRampDown("StepDown"), 
-                  
+                  GetOnEffectParameters("GetOnEffectParameters", &OnEffect, "retOnEffect", true), StepUp("StepUp"),
+                  StepDown("StepDown"), StartRampUp("StartRampUp"), StartRampDown("StartRampDown"),
+                  StartRampToLevel("StartRampToLevel", &LoadLevelTarget, "newLoadLevelTarget", false),
+                  SetStepDelta("SetStepDelta", &StepDelta, "newStepDelta", false),
+                  GetStepDelta("GetStepDelta", &StepDelta, "retStepDelta", true, true),
+                  SetRampRate("SetRampRate", &RampRate, "newRampRate", false),
+                  GetRampRate("GetRampRate", &RampRate, "retRampRate", true, true), PauseRamp("PauseRamp"),
+                  ResumeRamp("ResumeRamp"), GetIsRamping("GetIsRamping", &IsRamping, "retIsRamping", true, true),
                   LoadLevelTarget("LoadLevelTarget", false, false, 0, 0, 100),
                   LoadLevelStatus("LoadLevelStatus", true, false, 0, 0, 100),
                   OnEffectLevel("OnEffectLevel", false, false, 0, 0, 100),
                   OnEffect("OnEffect", false, false, 2, &_onEffects[0]),
-                  
                   // NOTE: StepDelta - default value to be defined, currently set at 10
                   StepDelta("StepDelta", true, false, 10, 1, 100), RampRate("RampRate", true, false, 0, 0, 100),
                   RampTime("RampTime", false, false, 0), IsRamping("IsRamping", true, false, false),
@@ -71,17 +82,29 @@ namespace EZ
                 _upnpVersionMajor = 1;
                 _upnpVersionMinor = 1;
 
+                // Actions
                 addActivity(SetLoadLevelTarget);
                 addActivity(GetLoadLevelTarget);
                 addActivity(GetLoadLevelStatus);
                 addActivity(SetOnEffectLevel);
                 addActivity(SetOnEffect);
-                //addActivity(GetOnEffectParameters);
+                GetOnEffectParameters.addArgument(&OnEffectLevel, "retEffectLevel", true);
+                addActivity(GetOnEffectParameters);
                 addActivity(StepUp);
                 addActivity(StepDown);
                 addActivity(StartRampUp);
                 addActivity(StartRampDown);
+                StartRampToLevel.addArgument(&RampTime, "newRampTime", false);
+                addActivity(StartRampToLevel);
+                addActivity(SetStepDelta);
+                addActivity(GetStepDelta);
+                addActivity(SetRampRate);
+                addActivity(GetRampRate);
+                addActivity(PauseRamp);
+                addActivity(ResumeRamp);
+                addActivity(GetIsRamping);
 
+                // State Variables
                 addActivity(LoadLevelTarget);
                 addActivity(LoadLevelStatus);
                 addActivity(OnEffectLevel);

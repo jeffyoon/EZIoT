@@ -50,18 +50,18 @@ namespace EZ
                     if (_postCallback(SERVICE::CALLBACK::POST_CHANGE))
                     {
                         // Save to NVS?
-                        if (_nvs && baseService())
+                        if (_nvs && homeService())
                             _nvsSave();
 
-                        if (_events && baseService())
-                            baseService()->registerEvent(this);
+                        if (_events && homeService())
+                            homeService()->registerEvent(this);
                     }
                 }
             }
 
             _giveServiceMutex();
 
-            ESP_LOGV(iotTag, "%s - hasChanged: %d", name().c_str(), _hasChanged);
+            // ESP_LOGV(iotTag, "%s - hasChanged: %d", name().c_str(), _hasChanged);
 
             return _hasChanged;
         }
@@ -109,10 +109,10 @@ namespace EZ
 
         bool _nvsErase(void)
         {
-            if (!baseService())
+            if (!homeService())
                 return false;
 
-            uint32_t nvsHandle = baseService()->nvsHandle();
+            uint32_t nvsHandle = homeService()->nvsHandle();
             esp_err_t err = nvs_erase_key(nvsHandle, name().c_str());
 
             if (err)
@@ -128,12 +128,12 @@ namespace EZ
 
         bool _nvsLoad(void)
         {
-            if (!baseService())
+            if (!homeService())
                 return false;
 
             uint32_t nvsHandle;
 
-            if ((nvsHandle = baseService()->nvsHandle()))
+            if ((nvsHandle = homeService()->nvsHandle()))
             {
                 esp_err_t err = _loadValue(nvsHandle);
 
@@ -154,12 +154,12 @@ namespace EZ
 
         bool _nvsSave(void)
         {
-            if (!baseService())
+            if (!homeService())
                 return false;
 
             uint32_t nvsHandle;
 
-            if ((nvsHandle = baseService()->nvsHandle()))
+            if ((nvsHandle = homeService()->nvsHandle()))
             {
                 esp_err_t err = _saveValue(nvsHandle);
 
