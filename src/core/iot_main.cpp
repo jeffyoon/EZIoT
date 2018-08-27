@@ -267,6 +267,7 @@ void IOT::_control(DEVICE* device, iot_control_t mode)
                 if (device->upnpFriendlyName() == "")
                 {
                     String fn = parseURN(device->upnpDeviceType());
+
                     fn += " (";
                     fn += _nodeCount;
                     fn += ")";

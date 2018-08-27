@@ -45,12 +45,18 @@ const char HTTP_END[] PROGMEM = "</div></body></html>";
 // <scpd xmlns="urn:schemas-upnp-org:service-1-0">
 // <serviceType>urn:schemas-upnp-org:service:Dimming:1</serviceType>
 // <serviceId>urn:upnp-org:serviceId:Dimming:1</serviceId>
+
+// urn:EZIoT:device:Manager:1
+
 // urn:EZIoT:device:Thing:1
 // urn:EZIoT:service:Sensor:1
 // urn:EZIoT:service:Actuator:1
+
+// urn:EZIoT:service:Outlet:1
 // urn:EZIoT:service:Light:1
 // urn:EZIoT:service:Dimmer:1
 // urn:EZIoT:service:Chromatic:1
+// urn:EZIoT:service:Pixels:1
 
 ROOT::ROOT() : DEVICE(), HTTP::SERVER()
 {
@@ -58,10 +64,12 @@ ROOT::ROOT() : DEVICE(), HTTP::SERVER()
     _iotCode = 1917792340;
     _upnpVersionMajor = 2;
     _upnpVersionMinor = 0;
-    _upnpDeviceType = "Thing:1";
+    _upnpDeviceType = "ThingManager:1";
     _httpServer = this;
     _httpSetup(this);
     httpHandler(this);
+
+    _upnpFriendlyName.value("ThingManager (" + upnpSerialNumber() + ")");
 }
 
 String ROOT::upnpUUID(void)
