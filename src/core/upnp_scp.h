@@ -42,20 +42,19 @@ namespace EZ
          **      Other variable names and values (if any) go here.
          ** </e:propertyset>
          */
-        static const char _gena_event_header[] = "NOTIFY %s HTTP/1.1\r\n"
+        static const char _gena_event_header[] = "NOTIFY %s HTTP/1.0\r\n"
                                                  "HOST: %s:%d\r\n"
                                                  "NT: upnp:event\r\n"
                                                  "NTS: upnp:propchange\r\n"
                                                  "SID: uuid:%s\r\n"
                                                  "SEQ: %u\r\n"
                                                  "CONTENT-TYPE: text/xml; charset=\"utf-8\"\r\n"
-                                                 "CONTENT-LENGTH: %d\r\n%s";
+                                                 "CONTENT-LENGTH: %d\r\n\r\n%s";
 
         static const char _gena_event_proph[] = "<?xml version=\"1.0\"?>\r\n"
                                                 "<e:propertyset xmlns:e=\"urn:schemas-upnp-org:event-1-0\">\r\n";
 
-        static const char _gena_event_propf[] = "</e:propertyset>\r\n"
-                                                "\r\n";
+        static const char _gena_event_propf[] = "</e:propertyset>\r\n";
 
         class SCP : public SERVICE
         {
@@ -304,7 +303,7 @@ namespace EZ
                 {
                     ESP_LOGV(iotTag, "Header: %s = %s", server.headerName(h).c_str(), server.header(h).c_str());
                 }
-               
+
                 String tmp;
                 int i, to;
                 time_t now;
@@ -324,12 +323,11 @@ namespace EZ
 
                 // New subscriptions should have an NT (upnp:event) header
                 //
-                // TODO: Smartthings (and others may) send new subscription requests
-                // without checking if they already have an active one, so we need
-                // to check if the new request is really a new one!
-                //
                 if (server.header("NT") == "upnp:event")
                 {
+                    if (server.header("SID") != "")
+                        return server.send(400);
+
                     _subscription* sub = nullptr;
 
                     // Any free slots?
@@ -342,6 +340,28 @@ namespace EZ
                                 sub = _subscriptions[s];
                                 sub->erase();
                                 break;
+                            }
+                            else
+                            {
+                                // Quick and dirty callback check!
+                                //
+                                // Smartthings (and others may) send new subscription requests
+                                // without checking if they already have an active one, so we need
+                                // to check if the new request is really a new one!
+                                //
+                                String cbURL("<http://");
+                                cbURL += _subscriptions[s]->ip.toString();
+                                cbURL += ":";
+                                cbURL += _subscriptions[s]->port;
+                                cbURL += _subscriptions[s]->url;
+                                cbURL += ">";
+
+                                ESP_LOGV(iotTag, "Callback: %s = %s", server.header("CALLBACK").c_str(), cbURL.c_str());
+
+                                if (server.header("CALLBACK") == cbURL) {
+                                    _subscriptions[s]->expires = now + to;
+                                    return _genaSuccess(server, _subscriptions[s], to, false);
+                                }
                             }
                         }
                         else
@@ -357,9 +377,6 @@ namespace EZ
                     // Subscription expiry time
                     //
                     sub->expires = now + to;
-
-                    if (server.header("SID") != "")
-                        return server.send(400);
 
                     // CALLBACK = <http://xxx.xxx.xxx.xxx:pppp/>
                     //
@@ -380,6 +397,8 @@ namespace EZ
                             {
                                 if ((sub->url = tmp.substring(tmp.indexOf("/", 8), i)) == "")
                                     sub->url = "/";
+
+                                // If we are not reusing a subscription
                                 sub->uuid.makeV4();
 
                                 return _genaSuccess(server, sub, to, false);
@@ -511,14 +530,13 @@ namespace EZ
                 for (int s = 0; s < EZ_UPNP_MAX_SUBSCRIPTIONS; s++)
                 {
                     time(&now);
+
                     if ((_subscriptions[s]) && _subscriptions[s]->expires > now)
                     {
-                        ESP_LOGV(iotTag, "Event: %s (%d:%d)", _subscriptions[s]->uuid.toString().c_str(),
+                        ESP_LOGV(iotTag, "Event (%d): %s (%d:%d)", s, _subscriptions[s]->uuid.toString().c_str(),
                                  _subscriptions[s]->expires, now);
 
                         _genaEvent(_subscriptions[s], reinterpret_cast<VARIABLE*>(activity));
-
-                        return;
                     }
                 }
             }
@@ -563,14 +581,16 @@ namespace EZ
 
                         sub.flush();
 
+                        // Only for testing/debugging - need to get Required
                         if (1)
                         {
                             char buf[1000];
+                            int len;
 
-                            snprintf(buf, sizeof(buf), _gena_event_header, e->url, sub.remoteIP().toString().c_str(),
+                            len = snprintf(buf, sizeof(buf), _gena_event_header, e->url, sub.remoteIP().toString().c_str(),
                                      sub.remotePort(), e->uuid, e->key, props.length(), props.c_str());
 
-                            ESP_LOGV(iotTag, "%s", buf);
+                            ESP_LOGV(iotTag, "\n%s", buf);
                         }
                     }
 

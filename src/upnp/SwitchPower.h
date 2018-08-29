@@ -45,14 +45,6 @@ namespace EZ
                 addActivity(Target);
                 addActivity(Status);
             }
-
-            String urlSchema(bool pathOnly = false)
-            {
-                String url = pathOnly ? "" : urlBase();
-
-                url.concat("/blight.xml");
-                return url;
-            }
         };
     } // namespace UPNP
 } // namespace EZ

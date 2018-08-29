@@ -177,7 +177,10 @@ String DEVICE::upnpXML(bool root)
             xml.concat("</deviceList>\r\n");
     }
 
-    xml.concat(xmlTag("presentationURL", urlPresentation()));
+    // Hmm, embedded devices can have own presentation URL
+    if (root)
+        xml.concat(xmlTag("presentationURL", urlPresentation()));
+    
     xml.concat("</device>\r\n");
 
     if (root)

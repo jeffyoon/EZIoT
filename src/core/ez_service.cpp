@@ -90,13 +90,13 @@ void SERVICE::_sendCommonHeaders(HTTP::SERVER& server, bool incServer)
 {
     if ((incServer) && _baseDevice)
     {
-        server.sendHeader("Server", _baseDevice->upnpServer().c_str());
+        server.sendHeader("SERVER", _baseDevice->upnpServer().c_str());
     }
 
     // server.sendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     // server.sendHeader("Pragma", "no-cache");
     // server.sendHeader("Expires", "-1");
 
-    server.sendHeader("Date", dateRFC1123());
-    server.sendHeader("Content-Language", "en");
+    server.sendHeader("DATE", dateRFC1123());
+    server.sendHeader("CONTENT-LANGUAGE", "en");
 }

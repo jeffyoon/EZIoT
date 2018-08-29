@@ -28,8 +28,8 @@ using namespace EZ;
 using namespace HTTP;
 
 static const char AUTHORIZATION_HEADER[] = "Authorization";
-static const char CONTENT_TYPE_HEADER[] = "Content-Type";
-static const char CONTENT_LENGTH_HEADER[] = "Content-Length";
+static const char CONTENT_TYPE_HEADER[] = "CONTENT-TYPE";
+static const char CONTENT_LENGTH_HEADER[] = "CONTENT-LENGTH";
 
 /*
 ** Class Construction
