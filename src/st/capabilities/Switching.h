@@ -32,6 +32,8 @@ namespace EZ
                   GetSwitch("GetSwitch", &SwitchState, "SwitchState", true), SwitchState("Switch", true, false, false),
                   _userActivityCb(nullptr), _pin(pin)
             {
+                _upnpXMLNS = EZ_UPNP_SCHEMA_SERVICE_XMLNS;  // Need this for standard UPnP tools to work!
+
                 _onActivityCb = std::bind(&SWITCHING::_SwitchActivity, this, std::placeholders::_1,
                                           std::placeholders::_2, std::placeholders::_3);
 
@@ -75,6 +77,7 @@ namespace EZ
 
                     if (type == CALLBACK::LOOP)
                     {
+                        //Serial.printf("SwitchState: (%d)\n", digitalRead(_pin));
                         SwitchState.native((bool)digitalRead(_pin));
                     }
                 }
