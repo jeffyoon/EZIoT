@@ -29,7 +29,7 @@ namespace EZ
             SWITCHING(uint16_t pin, const char *id = "Switching.1")
                 : SCP("Switching:1", id),
                   SetSwitch("SetSwitch", &SwitchState, "newSwitchState", false, true),
-                  GetSwitch("GetSwitch", &SwitchState, "SwitchState", true), SwitchState("Switch", true, false, false),
+                  GetSwitch("GetSwitch", &SwitchState, "SwitchState", true), SwitchState("SwitchState", true, false, false),
                   _userActivityCb(nullptr), _pin(pin)
             {
                 _upnpXMLNS = EZ_UPNP_SCHEMA_SERVICE_XMLNS;  // Need this for standard UPnP tools to work!
