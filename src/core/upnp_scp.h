@@ -66,10 +66,9 @@ namespace EZ
                 IPAddress ip;
                 uint port;
                 uint32_t key;
-                String url;
                 time_t expires;
+                String url;
                 UUID uuid;
-                // SERVICE* service;
 
                 _subscription() { erase(); }
 
@@ -81,7 +80,6 @@ namespace EZ
                     url = "";
                     expires = 0;
                     uuid = "";
-                    // service = nullptr;
                 }
             } subscription_t;
 
@@ -149,7 +147,7 @@ namespace EZ
             {
                 if (_upnpXMLNS)
                     return _upnpXMLNS;
-                return "urn:EZIoT:device-1-0";
+                return "urn:EZIoT:service-1-0";
             }
 
             virtual String upnpXML(void)
