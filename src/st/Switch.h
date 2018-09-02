@@ -32,7 +32,8 @@ namespace EZ
                 _upnpModelNumber = "1.0";
                 _upnpModelDescription = "EZIoT Simple Switch 1.0";
                 _upnpModelURL = "";
-
+                _upnpFriendlyName.value("Switch (" + String(pin) + ")");
+                
                 SwitchMode.onActivity(cb);
                 addService(SwitchMode);
             }
