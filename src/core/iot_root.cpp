@@ -40,36 +40,18 @@ const char HTTP_HEAD_END[] PROGMEM = "</head><body><div style='text-align:left;d
 
 const char HTTP_END[] PROGMEM = "</div></body></html>";
 
-// XMLNS = "urn:schemas-upnp-org:device-1-0"
-// urn:schemas-upnp-org:device:Basic:1
-// <scpd xmlns="urn:schemas-upnp-org:service-1-0">
-// <serviceType>urn:schemas-upnp-org:service:Dimming:1</serviceType>
-// <serviceId>urn:upnp-org:serviceId:Dimming:1</serviceId>
-
-// urn:EZIoT:device:Manager:1
-
-// urn:EZIoT:device:Thing:1
-// urn:EZIoT:service:Sensor:1
-// urn:EZIoT:service:Actuator:1
-
-// urn:EZIoT:service:Outlet:1
-// urn:EZIoT:service:Light:1
-// urn:EZIoT:service:Dimmer:1
-// urn:EZIoT:service:Chromatic:1
-// urn:EZIoT:service:Pixels:1
-
 ROOT::ROOT() : DEVICE(), HTTP::SERVER()
 {
     // 'rO0T' = 1917792340
     _iotCode = 1917792340;
     _upnpVersionMajor = 2;
     _upnpVersionMinor = 0;
-    _upnpDeviceType = "ThingManager:1";
+    _upnpDeviceType = "Thing:1";
     _httpServer = this;
     _httpSetup(this);
     httpHandler(this);
 
-    _upnpFriendlyName.value("ThingManager (" + upnpSerialNumber() + ")");
+    _upnpFriendlyName.value("Thing (" + upnpSerialNumber() + ")");
 }
 
 String ROOT::upnpUUID(void)
@@ -123,8 +105,6 @@ bool ROOT::_httpPresentation(HTTP::SERVER& server, HTTP::METHOD method, String u
     page += String(F("<h3>EZIoT</h3>"));
     // page += FPSTR(HTTP_PORTAL_OPTIONS);
     page += FPSTR(HTTP_END);
-
-    // server.sendHeader("Content-Length", String(page.length()));
 
     return server.send(200, MIME_TYPE_HTML, page);
 }

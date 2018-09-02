@@ -1,5 +1,5 @@
 /*
-** EZIoT - SmartThings 'Capability' Class
+** EZIoT - UPNP Binary Light Device
 **
 ** Copyright (c) 2017,18 P.C.Monteith, GPL-3.0 License terms and conditions.
 **
@@ -11,21 +11,14 @@
 ** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ** THE SOFTWARE.
 */
-#if !defined(_ST_CAPABILITY_H)
-#define _ST_CAPABILITY_H
-#include "upnp_scp.h"
-#include "st_thing.h"
-#include "ez_variable.h"
-#include "upnp_action.h"
+#if !defined(_ST_LIGHT_H)
+#define _ST_LIGHT_H
+//#include "Switch.h"
 
 namespace EZ
 {
     namespace ST
     {
-        class CAPABILITY : public UPNP::SCP
-        {
-
-        };
-    }
-}
-#endif // _ST_CAPABILITY_H
+    } // namespace ST
+} // namespace EZ
+#endif // _ST_LIGHT_H

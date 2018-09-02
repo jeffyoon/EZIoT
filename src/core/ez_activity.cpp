@@ -24,14 +24,16 @@ ACTIVITY::ACTIVITY(const char* name, MODE mode)
 int ACTIVITY::_takeServiceMutex(TickType_t xTicks)
 {
     if (_homeService)
-        return xSemaphoreTake(_homeService->mutexLock(), xTicks);
+        return xSemaphoreTakeRecursive(_homeService->mutexLock(), xTicks);
+        // return xSemaphoreTake(_homeService->mutexLock(), xTicks);
     return -1;
 }
 
 int ACTIVITY::_giveServiceMutex(void)
 {
     if (_homeService)
-        return xSemaphoreGive(_homeService->mutexLock());
+        return xSemaphoreGiveRecursive(_homeService->mutexLock());
+        // return xSemaphoreGive(_homeService->mutexLock());
     return -1;
 }
 

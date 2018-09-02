@@ -58,7 +58,8 @@ namespace EZ
             POST_ACTION
         };
 
-        typedef bool (*onActivityCb)(ACTIVITY* activity, CALLBACK type, void *vp);
+        //typedef bool (*onActivityCb)(ACTIVITY* activity, CALLBACK type, void *vp);
+        typedef std::function<bool(ACTIVITY* activity, CALLBACK type, void *vp)> onActivityCb;
 
         virtual ~SERVICE();
         SERVICE(MODE mode, const char* name);

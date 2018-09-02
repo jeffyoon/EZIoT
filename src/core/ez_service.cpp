@@ -21,7 +21,8 @@ SERVICE::SERVICE(MODE mode, const char* name)
     : _mode(mode), _name(name), _baseDevice(nullptr), _prevService(nullptr), _nextService(nullptr),
       _headActivity(nullptr), _tailActivity(nullptr), _onActivityCb(nullptr), _iotCode(0), _nvsHandle(0)
 {
-    _mutexLock = xSemaphoreCreateMutex();
+    // _mutexLock = xSemaphoreCreateMutex();
+    _mutexLock = xSemaphoreCreateRecursiveMutex();
 }
 
 SERVICE::~SERVICE() { vSemaphoreDelete(_mutexLock); };

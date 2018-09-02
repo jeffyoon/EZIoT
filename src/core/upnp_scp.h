@@ -138,7 +138,7 @@ namespace EZ
                 return false;
             }
 
-            // Should these be from the _baseDevice??
+            // Should these be from the _homeDevice??
             //
             virtual String upnpVersionMajor(void) { return String(_upnpVersionMajor); }
             virtual String upnpVersionMinor(void) { return String(_upnpVersionMinor); }
@@ -358,7 +358,8 @@ namespace EZ
 
                                 ESP_LOGV(iotTag, "Callback: %s = %s", server.header("CALLBACK").c_str(), cbURL.c_str());
 
-                                if (server.header("CALLBACK") == cbURL) {
+                                if (server.header("CALLBACK") == cbURL)
+                                {
                                     _subscriptions[s]->expires = now + to;
                                     return _genaSuccess(server, _subscriptions[s], to, false);
                                 }
@@ -585,9 +586,8 @@ namespace EZ
                         if (1)
                         {
                             char buf[1000];
-                            int len;
 
-                            len = snprintf(buf, sizeof(buf), _gena_event_header, e->url, sub.remoteIP().toString().c_str(),
+                            snprintf(buf, sizeof(buf), _gena_event_header, e->url, sub.remoteIP().toString().c_str(),
                                      sub.remotePort(), e->uuid, e->key, props.length(), props.c_str());
 
                             ESP_LOGV(iotTag, "\n%s", buf);
