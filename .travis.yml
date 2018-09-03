@@ -25,11 +25,11 @@ cache:
 
 env:
     - PLATFORMIO_CI_SRC=examples/BinaryLight
-#   - PLATFORMIO_CI_SRC=examples/DimmableLight
     - PLATFORMIO_CI_SRC=examples/WemoSocket
+    - PLATFORMIO_CI_SRC=examples/ST_Switch
 
 install:
     - pip install -U platformio
 
 script:
-    - platformio ci --lib="." --board=esp32dev
+    - platformio ci --lib="." --lib="./lib/Update" --board=esp32dev
