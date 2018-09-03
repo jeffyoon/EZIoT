@@ -1,5 +1,5 @@
 /*
-** EZIoT - UPNP Binary Light Device
+** EZIoT - ST Switch Device
 **
 ** Copyright (c) 2017,18 P.C.Monteith, GPL-3.0 License terms and conditions.
 **
