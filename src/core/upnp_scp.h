@@ -63,12 +63,13 @@ namespace EZ
 
             typedef struct _subscription
             {
+                uint16_t index;
                 IPAddress ip;
-                uint port;
+                uint16_t port;
                 uint32_t key;
                 time_t expires;
-                String url;
                 UUID uuid;
+                String url;
 
                 _subscription() { erase(); }
 
@@ -252,9 +253,29 @@ namespace EZ
             */
             void _initialise(void)
             {
+                for (int i = 0, s = 0; s < EZ_UPNP_MAX_SUBSCRIPTIONS; s++)
+                {
+                    subscription_t* sub = _loadSubscription(s);
+                    time_t now;
+                    time(&now);
 
+                    if (sub)
+                    {
+                        if (_subscriptions[i])
+                            delete _subscriptions[i];
+
+                        if (sub->expires > now)
+                        {
+                            _subscriptions[i] = sub;
+                            sub->index = i++;
+                            (void)_genaEvent(sub, NULL);
+                        }
+                        else
+                            delete sub;
+                    }
+                }
             }
-            
+
             /*
             ** Web Handlers
             */
@@ -293,6 +314,100 @@ namespace EZ
                 }
 
                 return server.send(501); // Not Implemented
+            }
+
+            /*
+            ** Load/Save GENA subscriptions
+            */
+            subscription_t* _loadSubscription(uint16_t index)
+            {
+                subscription_t* sub = new _subscription;
+                esp_err_t err;
+                uint32_t i;
+
+                if (sub && nvsHandle() && index < EZ_UPNP_MAX_SUBSCRIPTIONS)
+                {
+                    sub->index = index;
+
+                    err = nvs_get_u32(nvsHandle(), subItemKey(index, "ip"), &i);
+                    if (!err)
+                    {
+                        sub->ip = i;
+                        err = nvs_get_u16(nvsHandle(), subItemKey(index, "port"), &sub->port);
+                    }
+
+                    if (!err)
+                        err = nvs_get_u32(nvsHandle(), subItemKey(index, "key"), &sub->key);
+
+                    if (!err)
+                        err = nvs_get_u32(nvsHandle(), subItemKey(index, "expires"), (uint32_t*)&sub->expires);
+
+                    if (!err)
+                    {
+                        size_t b = sub->uuid.size();
+
+                        err = nvs_get_blob(nvsHandle(), subItemKey(index, "uuid"), sub->uuid.raw_address(), &b);
+                    }
+
+                    if (!err)
+                    {
+                        const char* key = subItemKey(index, "url");
+                        char* value = NULL;
+                        size_t len = 0;
+
+                        err = nvs_get_str(nvsHandle(), key, NULL, &len);
+                        if (!err)
+                        {
+                            char buf[len];
+                            value = buf;
+                            err = nvs_get_str(nvsHandle(), key, value, &len);
+                            if (!err)
+                            {
+                                sub->url = value;
+                                return sub;
+                            }
+                        }
+                    }
+                }
+
+                if (sub)
+                    delete sub;
+
+                return NULL;
+            }
+
+            bool _saveSubscription(subscription_t* sub)
+            {
+                if ((!sub || !nvsHandle()) || sub->index >= EZ_UPNP_MAX_SUBSCRIPTIONS)
+                    return false;
+
+                esp_err_t err;
+
+                err = nvs_set_u32(nvsHandle(), subItemKey(sub->index, "ip"), (uint32_t)sub->ip);
+                err = nvs_set_u16(nvsHandle(), subItemKey(sub->index, "port"), (uint16_t)sub->port);
+                err = nvs_set_u32(nvsHandle(), subItemKey(sub->index, "key"), (uint32_t)sub->key);
+                err = nvs_set_u32(nvsHandle(), subItemKey(sub->index, "expires"), (uint32_t)sub->expires);
+                err = nvs_set_blob(nvsHandle(), subItemKey(sub->index, "uuid"), sub->uuid.raw_address(),
+                                   sub->uuid.size());
+                err = nvs_set_str(nvsHandle(), subItemKey(sub->index, "url"), sub->url.c_str());
+                err = nvs_commit(nvsHandle());
+
+                if (err)
+                {
+                    ESP_LOGV(iotTag, "saveSubscription: NVS Commit failed: %s", nvs_error(err));
+                    return false;
+                }
+
+                return true;
+            }
+
+            const char* subItemKey(uint16_t index, const char* suffix)
+            {
+                static char key[15 + 1];
+
+                snprintf(key, sizeof(key), "*suB$%d:%s", index, suffix);
+
+                return key;
             }
 
             /*
@@ -374,6 +489,7 @@ namespace EZ
                         else
                         {
                             _subscriptions[s] = sub = new _subscription;
+                            sub->index = s;
                             break;
                         }
                     }
@@ -404,10 +520,8 @@ namespace EZ
                             {
                                 if ((sub->url = tmp.substring(tmp.indexOf("/", 8), i)) == "")
                                     sub->url = "/";
-
-                                // If we are not reusing a subscription
                                 sub->uuid.makeV4();
-
+                                _saveSubscription(sub);
                                 return _genaSuccess(server, sub, to, false);
                             }
                         }
@@ -425,6 +539,7 @@ namespace EZ
                         if ((_subscriptions[s]) && _subscriptions[s]->uuid == uuid)
                         {
                             _subscriptions[s]->expires = now + to;
+                            _saveSubscription(_subscriptions[s]);
                             return _genaSuccess(server, _subscriptions[s], to, true);
                         }
                     }
@@ -457,6 +572,7 @@ namespace EZ
                         if ((_subscriptions[s]) && _subscriptions[s]->uuid == uuid)
                         {
                             _subscriptions[s]->erase();
+                            _saveSubscription(_subscriptions[s]);
                             return server.send(200);
                         }
                     }
