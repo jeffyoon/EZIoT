@@ -248,6 +248,14 @@ namespace EZ
             }
 
             /*
+            ** Initialise service
+            */
+            void _initialise(void)
+            {
+
+            }
+            
+            /*
             ** Web Handlers
             */
             bool _httpAccept(HTTP::METHOD method, String uri)

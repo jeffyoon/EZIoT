@@ -25,6 +25,7 @@ namespace EZ
         CONFIG() : SERVICE(SERVICE::MODE::CONFIG, "_config_") {}
 
     private:
+        void _initialise(void) {}
         bool _httpAccept(HTTP::METHOD method, String uri) { return false; }
         bool _httpHandle(HTTP::SERVER& server, HTTP::METHOD method, String uri) { return false; }
     };

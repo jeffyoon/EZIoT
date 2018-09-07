@@ -355,6 +355,9 @@ void IOT::_control(DEVICE* device, iot_control_t mode)
                             service->_nvsHandle = 0;
                             ESP_LOGE(_tag, "NVS: Open failed: %s", nvs_error(err));
                         }
+
+                        service->_initialise();
+                        
                         if (service->_onActivityCb)
                             (void)service->_onActivityCb(nullptr, SERVICE::CALLBACK::INIT, service);
                     }

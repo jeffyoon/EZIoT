@@ -94,6 +94,7 @@ namespace EZ
         ACTIVITY* _tailActivity;
         onActivityCb _onActivityCb;
 
+        virtual void _initialise(void) = 0;
         virtual bool _httpAccept(HTTP::METHOD method, String uri) = 0;
         virtual bool _httpHandle(HTTP::SERVER& server, HTTP::METHOD method, String uri) = 0;
         void _sendCommonHeaders(HTTP::SERVER& server, bool incServer = true);
