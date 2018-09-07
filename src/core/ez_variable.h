@@ -34,6 +34,8 @@ namespace EZ
         }
 
         String type(void) { return _type; }
+        bool nvs(void) { return _nvs; }
+        void nvs(bool nvsSave) { _nvs = nvsSave; }
         bool value(const char* newValue) { return value(String(newValue)); }
 
         bool value(String newValue)
