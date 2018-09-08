@@ -10,10 +10,8 @@ To use the library you will need either the Ardino IDE or PlatformIO with the ES
 
 ### Installation
 
-```
 [Arduino IDE](docs/arduino.md)
 [PlatformIO](docs/platformio.md)
-```
 
 ## Testing
 
