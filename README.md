@@ -1,4 +1,18 @@
-# EZIoT - In Development [![Build Status](https://travis-ci.org/EZIoT/EZIoT.svg?branch=master)](https://travis-ci.org/EZIoT/EZIoT)
-Easy "Internet of Things" Library for ESP32
+# EZIoT - Easy "Internet of Things" [![Build Status](https://travis-ci.org/EZIoT/EZIoT.svg?branch=master)](https://travis-ci.org/EZIoT/EZIoT)
 
-This library is in development and is not a working or complete library
+EZIoT is a UPnP based library for the ESP32 WiFi microcontroller chip from [Espressif Systems](https://www.espressif.com/).
+ 
+***This library is currently in development and is not a fully working or complete library***
+
+## License
+
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details
+
+## Acknowledgments
+
+* AlexT for his [WiFi Manager](https://github.com/tzapu) project
+* Ivan Grokhotkov - ESP8266WebServer library,
+* Danny Backx - Inspiration from his [arduino-upnp](https://github.com/dannybackx/arduino-upnp) project
+* Peter Knight - TrueRandom - A true random number generator for Arduino
+
+If I have missed anyone, I apologise and please let me know so credit can be acknowledged where credit is due!
