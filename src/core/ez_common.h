@@ -61,7 +61,7 @@
 
 #define EZ_BOARD ARDUINO_BOARD
 #define EZ_VARIANT ARDUINO_VARIANT
-#define EZ_VERSION "0.0.0.1"
+#define EZ_VERSION "0.0.0.2"
 
 #define EZ_DEFAULT_TIMEZONE "UTC"
 #define EZ_DEFAULT_TIMESERVER "pool.ntp.org"
