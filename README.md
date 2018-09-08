@@ -4,6 +4,11 @@ EZIoT is a UPnP based library for the ESP32 WiFi microcontroller chip from [Espr
  
 ***This library is currently in development and is not a fully working or complete library***
 
+## Testing
+
+I have being using the [Universal Plug-and-Play Tester](http://noeld.com/programs.asp?cat=dstools#upnptest) for 
+testing the interaction with the library running on a variety of ESP32 boards.
+
 ## License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details
