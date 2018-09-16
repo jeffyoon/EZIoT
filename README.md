@@ -11,22 +11,29 @@ To use the library you will need either the Ardino IDE or PlatformIO with the ES
 ### Installation
 
 [Arduino IDE](docs/arduino.md)
+
 [PlatformIO](docs/platformio.md)
 
 ## Testing
 
-I have being using the [Universal Plug-and-Play Tester](http://noeld.com/programs.asp?cat=dstools#upnptest) for 
-testing the interaction with the library running on a variety of ESP32 boards.
+Use the [Universal Plug-and-Play Tester](http://noeld.com/programs.asp?cat=dstools#upnptest) for 
+testing the interaction with the library running on the ESP32 boards.
 
 ## License
 
 This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details
 
-## Acknowledgments
+## Acknowledgments and Thanks
 
 * AlexT for his [WiFi Manager](https://github.com/tzapu) project
 * Ivan Grokhotkov - ESP8266WebServer library,
 * Danny Backx - Inspiration from his [arduino-upnp](https://github.com/dannybackx/arduino-upnp) project
 * Peter Knight - TrueRandom - A true random number generator for Arduino
+* David A. Mellis/Tom Igoe - Generic Signal Smoothing Class
+* Adafruit - NeoPixel Library (and other useful librarys)
+* Harm Aldick - [WS2812FX](https://github.com/kitesurfer1404/WS2812FX) Library
+* Chris Osborn and Martin F. Falatic - NeoPixel ESP32 RMT Peripheral Driver(s)
+* Brian Neltner - HSI to RGB(W) Colorspace Conversion
+* Claude Heintz - LXHardwareSerial for DMX
 
 If I have missed anyone, I apologise and please let me know so credit can be acknowledged where credit is due!
