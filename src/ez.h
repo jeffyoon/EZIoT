@@ -15,9 +15,8 @@
 #if !defined(_EZ_H)
 #define _EZ_H
 #include "core/iot.h"
-//#include "upnp/upnp.h"
-//#include "wemo/wemo.h"
-
+#include "core/hal/hal_dmx.h"
+#include "core/hal/hal_neo.h"
 
 #endif // _EZ_H
 #else  // ARDUINO_ARCH_ESP32

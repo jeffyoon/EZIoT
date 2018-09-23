@@ -1,10 +1,7 @@
 /*
-** EZIoT - Digital PIN Class
+** EZIoT - Pixel Seqeunces
 **
 ** Copyright (c) 2017,18 P.C.Monteith, GPL-3.0 License terms and conditions.
-**
-** Class based on code created 22 Apr 2007 by David A. Mellis  <dam@mellis.org>
-** and later modified 9 Apr 2012 by Tom Igoe
 **
 ** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 ** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -14,15 +11,36 @@
 ** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ** THE SOFTWARE.
 */
-#ifndef _EZI_HAL_DPIN_H
-#define _EZI_HAL_DPIN_H
+#ifndef _EZ_PIXEL_SEQUENCE_H
+#define _EZ_PIXEL_SEQUENCE_H
+#include "core/tool/ez_color.h"
 #include <Arduino.h>
 
 namespace EZ
 {
-    namespace HAL
+    namespace PIXEL
     {
-    } // namespace HAL
+        typedef struct PATTERN
+        {
+            struct type
+            {
+                uint8_t timer : 3, onFrame : 1, onCycle : 1;
+            };
+
+            uint8_t mode;
+            uint8_t level;
+            uint8_t speed;
+            uint8_t flags;
+            COLOR color1;
+            COLOR color2;
+            uint32_t count;
+
+            // Constructors
+            //
+            PATTERN();
+
+        } pattern_t;
+
+    } // namespace PIXEL
 } // namespace EZ
-#endif // _EZI_HAL_DPIN_H
-/******************************************************************************/
+#endif // _EZ_PIXEL_SEQUENCE_H

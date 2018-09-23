@@ -14,8 +14,8 @@
 ** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ** THE SOFTWARE.
 */
-#ifndef _EZI_HAL_SMOOTH_H
-#define _EZI_HAL_SMOOTH_H
+#ifndef _EZ_HAL_SMOOTH_H
+#define _EZ_HAL_SMOOTH_H
 #include <Arduino.h>
 
 namespace EZ

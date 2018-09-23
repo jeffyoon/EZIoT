@@ -31,7 +31,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 * Peter Knight - TrueRandom - A true random number generator for Arduino
 * David A. Mellis/Tom Igoe - Generic Signal Smoothing Class
 * Adafruit - NeoPixel Library (and other useful librarys)
-* Harm Aldick - [WS2812FX](https://github.com/kitesurfer1404/WS2812FX) Library
+* Harm Aldick/Keith Lord - [WS2812FX](https://github.com/kitesurfer1404/WS2812FX) Library
 * Chris Osborn and Martin F. Falatic - NeoPixel ESP32 RMT Peripheral Driver(s)
 * Brian Neltner - HSI to RGB(W) Colorspace Conversion
 * Claude Heintz - LXHardwareSerial for DMX

@@ -65,10 +65,12 @@ namespace EZ
 
         UUID(String uuid) : UUID() { (void)fromString(uuid); }
         UUID(const char* uuid) : UUID() { (void)fromString(uuid); }
+
         uint8_t operator[](int index) const { return _uuid.b[index]; }
         uint8_t& operator[](int index) { return _uuid.b[index]; }
         bool operator==(const UUID& uuid) const { return (_uuid.ll1 == uuid._uuid.ll1 && _uuid.ll2 == uuid._uuid.ll2); }
         bool operator==(bool empty) const { return (_uuid.ll1 != 0 && _uuid.ll2 != 0); }
+
         bool operator==(const char* uuid) const { return (String(uuid) == toString()); }
         bool operator==(String uuid) const { return (uuid == toString()); }
 
