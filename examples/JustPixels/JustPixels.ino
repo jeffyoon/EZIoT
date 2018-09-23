@@ -11,9 +11,7 @@
 ** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 ** THE SOFTWARE.
 */
-//#include "ez.h"
-#include "core/hal/hal_dmx.h"
-#include "core/hal/hal_neo.h"
+#include "ez.h"
 
 using namespace EZ;
 
